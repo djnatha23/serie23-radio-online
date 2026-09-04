@@ -1263,7 +1263,9 @@
   /* ===================================================================
      2) REPRODUCTORES (señal real de RadioBOSS Cloud)
      =================================================================== */
-  const RADIO_STREAM_URL = 'https://c32.radioboss.fm/stream/884';
+  // Punto de escucha público del servidor RadioBOSS Cloud.
+  // El puerto 8884 es necesario para que el navegador reciba el flujo MP3.
+  const RADIO_STREAM_URL = 'https://c32.radioboss.fm:8884/stream';
   const radioAudio = document.getElementById('radioAudio');
   const playBtn = document.getElementById('playBtn');
   const playerBox = document.getElementById('playerBox');

@@ -1,16 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-  <title id="title">Serie23 Radio</title>
-  <desc id="desc">Icono rojo y negro de Serie23 Radio Online</desc>
+  <title id="title">Serie23 Radio Show</title>
+  <desc id="desc">Logo de Serie23 Radio Show, emisora tropical online</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#e2131f"/>
-      <stop offset="1" stop-color="#790910"/>
+      <stop offset="0" stop-color="#170306"/>
+      <stop offset="0.55" stop-color="#070607"/>
+      <stop offset="1" stop-color="#26070b"/>
     </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff2737"/>
+      <stop offset="1" stop-color="#a80715"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="5" flood-color="#000" flood-opacity=".9"/>
+    </filter>
   </defs>
-  <rect width="512" height="512" rx="112" fill="#060504"/>
-  <rect x="28" y="28" width="456" height="456" rx="92" fill="url(#bg)"/>
-  <circle cx="256" cy="184" r="54" fill="#f5f2ee"/>
-  <path d="M145 311c31-41 62-61 111-61s80 20 111 61" fill="none" stroke="#f5f2ee" stroke-width="20" stroke-linecap="round"/>
-  <path d="M113 348c43-55 91-82 143-82s100 27 143 82" fill="none" stroke="#060504" stroke-width="16" stroke-linecap="round" opacity=".85"/>
-  <text x="256" y="421" text-anchor="middle" font-family="Arial, sans-serif" font-size="70" font-weight="900" fill="#f5f2ee" letter-spacing="4">S23</text>
+
+  <rect width="512" height="512" rx="112" fill="#050404"/>
+  <rect x="22" y="22" width="468" height="468" rx="98" fill="url(#bg)" stroke="#e2131f" stroke-width="10"/>
+  <path d="M68 150h376M68 362h376" stroke="#e2131f" stroke-width="4" opacity=".72"/>
+
+  <g fill="none" stroke="#f5f2ee" stroke-linecap="round" opacity=".92">
+    <path d="M108 119c22-25 50-39 82-43" stroke-width="10"/>
+    <path d="M404 119c-22-25-50-39-82-43" stroke-width="10"/>
+    <path d="M76 91c31-35 70-55 114-60" stroke="url(#red)" stroke-width="8"/>
+    <path d="M436 91c-31-35-70-55-114-60" stroke="url(#red)" stroke-width="8"/>
+  </g>
+
+  <g filter="url(#shadow)" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-style="italic" font-weight="900">
+    <text x="256" y="248" font-size="101" letter-spacing="-7" fill="#f5f2ee" stroke="#060504" stroke-width="14" paint-order="stroke">Serie23</text>
+    <text x="256" y="316" font-size="46" letter-spacing="5" fill="#f5f2ee" stroke="#b20c19" stroke-width="7" paint-order="stroke">RADIO SHOW</text>
+  </g>
+
+  <g fill="url(#red)">
+    <path d="M113 391h20v30h-20zM143 376h20v45h-20zM173 359h20v62h-20zM203 382h20v39h-20zM289 382h20v39h-20zM319 359h20v62h-20zM349 376h20v45h-20zM379 391h20v30h-20z"/>
+    <circle cx="256" cy="413" r="13" fill="#f5f2ee"/>
+  </g>
+  <path d="M96 444h320" stroke="#f5f2ee" stroke-width="6" opacity=".9"/>
 </svg>

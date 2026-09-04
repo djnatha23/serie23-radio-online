@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#e2131f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Serie23 Radio">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/app-icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/app-icon.svg">
 <title>Serie23 Radio Online — 24/7 Tropical</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -882,6 +890,7 @@
       <div class="hero-actions">
         <a href="#reproductor" class="btn btn-primary">▶ ESCUCHAR EN VIVO</a>
         <a href="#programacion" class="btn btn-ghost">Ver programación</a>
+        <button type="button" class="btn btn-ghost" id="installAppBtn" hidden>📲 Instalar app</button>
       </div>
     </div>
   </section>
@@ -1256,6 +1265,38 @@
   const LOCAL_FLYERS_KEY = 'serie23_flyers';
   const CODIGO_ZONA_PRIVADA = "serie23";
 
+  /* INSTALACIÓN COMO APP: Android/Chrome mostrará el botón cuando la
+     página cumpla las condiciones de instalación; en iPhone se puede
+     añadir desde Compartir > Añadir a pantalla de inicio. */
+  if ('serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(error => {
+        console.warn('No se pudo activar el modo app:', error);
+      });
+    });
+  }
+
+  let deferredInstallPrompt = null;
+  const installAppBtn = document.getElementById('installAppBtn');
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    if (installAppBtn) installAppBtn.hidden = false;
+  });
+  if (installAppBtn){
+    installAppBtn.addEventListener('click', async () => {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      installAppBtn.hidden = true;
+    });
+  }
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    if (installAppBtn) installAppBtn.hidden = true;
+  });
+
   /* ===================================================================
      1) NAV / MENÚ MÓVIL
      =================================================================== */
@@ -1427,6 +1468,7 @@
      porque no necesitan sincronización pública para esta página.
      =================================================================== */
   let flyerServerOnline = false;
+  let refreshFlyersView = null;
 
   function localFlyerList(){
     try { return JSON.parse(localStorage.getItem(LOCAL_FLYERS_KEY) || '[]'); }
@@ -1477,28 +1519,39 @@
           if (!stopped) cb(localFlyerList());
         }
       };
+      refreshFlyersView = read;
       read();
       const timer = setInterval(read, 10000);
-      return () => { stopped = true; clearInterval(timer); };
+      return () => {
+        stopped = true;
+        clearInterval(timer);
+        if (refreshFlyersView === read) refreshFlyersView = null;
+      };
     },
     async addFlyer(dataURL){
-      return serverRequest(FLYERS_API, {
+      const result = await serverRequest(FLYERS_API, {
         method:'POST',
         headers:{'content-type':'application/json','x-flyer-admin-code':CODIGO_ZONA_PRIVADA},
         body:JSON.stringify({ image:dataURL })
       });
+      if (refreshFlyersView) refreshFlyersView();
+      return result;
     },
     async deleteFlyer(id){
-      return serverRequest(FLYERS_API + '?id=' + encodeURIComponent(id), {
+      const result = await serverRequest(FLYERS_API + '?id=' + encodeURIComponent(id), {
         method:'DELETE',
         headers:{'x-flyer-admin-code':CODIGO_ZONA_PRIVADA}
       });
+      if (refreshFlyersView) refreshFlyersView();
+      return result;
     },
     async clearFlyers(){
-      return serverRequest(FLYERS_API + '?id=all', {
+      const result = await serverRequest(FLYERS_API + '?id=all', {
         method:'DELETE',
         headers:{'x-flyer-admin-code':CODIGO_ZONA_PRIVADA}
       });
+      if (refreshFlyersView) refreshFlyersView();
+      return result;
     },
     // ---- MENSAJES / SOLICITUDES ----
     subscribeMessages(cb){

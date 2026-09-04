@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Serie23 Radio</title>
+  <desc id="desc">Icono rojo y negro de Serie23 Radio Online</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e2131f"/>
+      <stop offset="1" stop-color="#790910"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#060504"/>
+  <rect x="28" y="28" width="456" height="456" rx="92" fill="url(#bg)"/>
+  <circle cx="256" cy="184" r="54" fill="#f5f2ee"/>
+  <path d="M145 311c31-41 62-61 111-61s80 20 111 61" fill="none" stroke="#f5f2ee" stroke-width="20" stroke-linecap="round"/>
+  <path d="M113 348c43-55 91-82 143-82s100 27 143 82" fill="none" stroke="#060504" stroke-width="16" stroke-linecap="round" opacity=".85"/>
+  <text x="256" y="421" text-anchor="middle" font-family="Arial, sans-serif" font-size="70" font-weight="900" fill="#f5f2ee" letter-spacing="4">S23</text>
+</svg>

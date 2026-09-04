@@ -1,0 +1,21 @@
+{
+  "name": "Serie23 Radio Online",
+  "short_name": "Serie23 Radio",
+  "description": "Escucha Serie23 Radio Online en vivo, 24/7 tropical.",
+  "lang": "es",
+  "start_url": "/?app=serie23",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#060504",
+  "theme_color": "#e2131f",
+  "categories": ["music", "entertainment", "radio"],
+  "icons": [
+    {
+      "src": "/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

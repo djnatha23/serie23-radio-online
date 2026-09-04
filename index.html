@@ -7,32 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <!--
-  ALMACENAMIENTO COMPARTIDO (Firebase Firestore)
-  ------------------------------------------------
-  Para que los flyers y los mensajes se vean iguales en cualquier navegador o
-  dispositivo, este sitio usa Firebase (plan gratuito "Spark" es suficiente).
-  Pasos para activarlo (una sola vez):
-    1) Crea un proyecto gratis en https://console.firebase.google.com
-    2) Activa "Firestore Database" (modo producción) y "Authentication" >
-       método "Anónimo".
-    3) En Firestore > Reglas, pega esto (permite leer a todos, pero solo
-       escribir a quien esté autenticado, es decir, a quien haya entrado a
-       la Zona Privada de este sitio):
-         rules_version = '2';
-         service cloud.firestore {
-           match /databases/{database}/documents {
-             match /flyers/{doc}   { allow read: if true; allow write: if request.auth != null; }
-             match /messages/{doc} { allow read: if request.auth != null; allow create: if true; }
-           }
-         }
-    4) Copia la configuración de tu proyecto (Configuración del proyecto >
-       "Tus apps" > Config) y pégala abajo en FIREBASE_CONFIG.
-  Mientras no lo configures, el sitio sigue funcionando pero cada navegador
-  guarda sus propios flyers/mensajes solo de forma local (modo de prueba).
+  SERVIDOR COMPARTIDO (Netlify Functions + Netlify Blobs)
+  --------------------------------------------------------
+  Para que los flyers se vean iguales en cualquier navegador o
+  dispositivo, este sitio usa el servidor de Netlify.
+  Los flyers se guardan en el servidor de Netlify y se actualizan entre
+  navegadores automáticamente.
+  La Zona Privada continúa protegida con el código de acceso del sitio.
 -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   :root{
@@ -45,6 +27,7 @@
     --red-glow:rgba(226,19,31,0.35);
     --white:#f5f2ee;
     --grey:#9a9089;
+    --gold:#e8b34b;
     --line:#2b2422;
     --player-h:76px;
   }
@@ -462,6 +445,24 @@
 
   /* REPRODUCTOR */
   .player-section{background:var(--charcoal);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .audience-section{padding:0 0 34px;background:var(--charcoal);}
+  .audience-card{
+    display:flex;align-items:center;gap:14px;max-width:720px;margin:0 auto;
+    background:linear-gradient(135deg,rgba(226,19,31,.10),rgba(26,22,20,.92));
+    border:1px solid var(--line);border-radius:12px;padding:15px 20px;
+  }
+  .audience-icon{font-size:24px;line-height:1;filter:grayscale(.15);}
+  .audience-copy{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+  .audience-copy .kicker{width:100%;margin-bottom:1px;}
+  #listenerCount{font-family:'Anton',sans-serif;font-size:29px;line-height:1;color:var(--white);letter-spacing:.03em;}
+  #listenerLabel{font-size:14px;color:var(--grey);font-weight:700;}
+  #listenerUpdated{width:100%;font-size:11px;color:var(--grey);}
+  .audience-dot{margin-left:auto;width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 5px rgba(226,19,31,.12);flex:0 0 auto;}
+  .audience-dot.online{background:#7fd88f;box-shadow:0 0 0 5px rgba(127,216,143,.12);}
+  @media (max-width:640px){
+    .audience-card{padding:14px 15px;}
+    #listenerCount{font-size:26px;}
+  }
 
   /* PEDIR CANCIÓN */
   .request-section{
@@ -906,6 +907,21 @@
     </div>
   </section>
 
+  <section class="audience-section" id="audiencia">
+    <div class="wrap">
+      <div class="audience-card" aria-live="polite">
+        <div class="audience-icon" aria-hidden="true">👥</div>
+        <div class="audience-copy">
+          <div class="kicker">AUDIENCIA EN VIVO</div>
+          <strong id="listenerCount">—</strong>
+          <span id="listenerLabel">personas conectadas</span>
+          <small id="listenerUpdated">Comprobando oyentes...</small>
+        </div>
+        <span class="audience-dot" id="listenerDot" aria-hidden="true"></span>
+      </div>
+    </div>
+  </section>
+
   <section class="request-section" id="pide-tu-cancion">
     <div class="wrap">
       <div class="section-head">
@@ -1232,25 +1248,13 @@
 
 <script>
   /* ===================================================================
-     0) CONFIGURACIÓN DE FIREBASE (almacenamiento compartido)
-     Pega aquí la configuración de TU proyecto de Firebase (ver el
-     comentario grande al inicio del <head> con las instrucciones).
-     Si dejas los valores de ejemplo, el sitio funciona en "modo local":
-     cada navegador ve solo sus propios flyers/mensajes.
+     0) SERVIDOR COMPARTIDO DE NETLIFY
+     Flyers: función pública para leer y protegida por el código privado
+     para publicar/eliminar. Mensajes: respaldo local del panel existente.
      =================================================================== */
-  const FIREBASE_CONFIG = {
-    apiKey: "TU_API_KEY",
-    authDomain: "TU_PROYECTO.firebaseapp.com",
-    projectId: "TU_PROYECTO",
-    storageBucket: "TU_PROYECTO.appspot.com",
-    messagingSenderId: "000000000000",
-    appId: "TU_APP_ID"
-  };
+  const FLYERS_API = '/.netlify/functions/flyers';
+  const LOCAL_FLYERS_KEY = 'serie23_flyers';
   const CODIGO_ZONA_PRIVADA = "serie23";
-
-  function firebaseConfigured(){
-    return FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf('TU_') !== 0;
-  }
 
   /* ===================================================================
      1) NAV / MENÚ MÓVIL
@@ -1342,6 +1346,37 @@
   setVolume(70);
   updatePlayerUI(false);
 
+  /* CONTADOR DE AUDIENCIA: consulta el estado público del servidor
+     a través de una función de Netlify para evitar bloqueos de CORS. */
+  const listenerCount = document.getElementById('listenerCount');
+  const listenerLabel = document.getElementById('listenerLabel');
+  const listenerUpdated = document.getElementById('listenerUpdated');
+  const listenerDot = document.getElementById('listenerDot');
+
+  async function refreshListenerCount(){
+    if (!listenerCount) return;
+    try{
+      const response = await fetch('/.netlify/functions/listeners?t=' + Date.now(), { cache:'no-store' });
+      if (!response.ok) throw new Error('No se pudo consultar la audiencia');
+      const data = await response.json();
+      const count = Number(data.listeners);
+      if (!data.online || !Number.isFinite(count)) throw new Error('Audiencia no disponible');
+      const rounded = Math.max(0, Math.round(count));
+      listenerCount.textContent = rounded.toLocaleString('es-DO');
+      listenerLabel.textContent = rounded === 1 ? 'persona conectada' : 'personas conectadas';
+      listenerUpdated.textContent = 'Actualizado ahora';
+      listenerDot.classList.add('online');
+    } catch (error){
+      listenerCount.textContent = '—';
+      listenerLabel.textContent = 'oyentes conectados';
+      listenerUpdated.textContent = 'No se pudo consultar el contador';
+      listenerDot.classList.remove('online');
+    }
+  }
+
+  refreshListenerCount();
+  setInterval(refreshListenerCount, 15000);
+
   // Lista de canciones del ticker (sustituir por metadatos reales del stream)
   const tpSongs = [
     'Juan Luis Guerra — Bachata Rosa',
@@ -1388,119 +1423,104 @@
 
   /* ===================================================================
      3) CAPA DE ALMACENAMIENTO COMPARTIDO
-     Usa Firebase si está configurado; si no, usa localStorage como
-     respaldo (solo funciona en el mismo navegador/dispositivo).
+     Flyers: servidor de Netlify. Mensajes: localStorage como respaldo
+     porque no necesitan sincronización pública para esta página.
      =================================================================== */
-  let db = null, auth = null;
-  const useFirebase = firebaseConfigured() && typeof firebase !== 'undefined';
+  let flyerServerOnline = false;
 
-  if (useFirebase){
-    try{
-      firebase.initializeApp(FIREBASE_CONFIG);
-      db = firebase.firestore();
-      auth = firebase.auth();
-    }catch(err){
-      console.error('Error iniciando Firebase:', err);
+  function localFlyerList(){
+    try { return JSON.parse(localStorage.getItem(LOCAL_FLYERS_KEY) || '[]'); }
+    catch (error) { return []; }
+  }
+
+  function updateStorageNote(online = flyerServerOnline){
+    const note = document.getElementById('storageNote');
+    if (!note) return;
+    if (online){
+      note.textContent = '✅ Servidor compartido activo. Los flyers publicados se ven en todos los navegadores.';
+      note.classList.add('ok');
+    } else {
+      note.textContent = '⚠️ No se pudo conectar al servidor compartido. Se está usando el respaldo local de este navegador.';
+      note.classList.remove('ok');
     }
   }
 
-  function updateStorageNote(){
-    const note = document.getElementById('storageNote');
-    if (!note) return;
-    if (useFirebase && db){
-      note.textContent = '✅ Almacenamiento compartido activo (Firebase). Los flyers y mensajes se ven iguales en cualquier navegador o dispositivo.';
-      note.classList.add('ok');
-    } else {
-      note.textContent = '⚠️ Modo local: aún no configuraste Firebase, así que los flyers y mensajes solo se guardan en este navegador. Revisa las instrucciones al inicio del código (etiqueta <head>) para activar el almacenamiento compartido en tiempo real.';
-      note.classList.remove('ok');
-    }
+  async function readServerFlyers(){
+    const response = await fetch(FLYERS_API + '?t=' + Date.now(), { cache:'no-store' });
+    if (!response.ok) throw new Error('No se pudo leer el servidor de flyers');
+    const data = await response.json();
+    flyerServerOnline = true;
+    updateStorageNote(true);
+    return Array.isArray(data.flyers) ? data.flyers : [];
+  }
+
+  async function serverRequest(url, options){
+    const response = await fetch(url, options);
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || 'No se pudo completar la operación');
+    flyerServerOnline = true;
+    updateStorageNote(true);
+    return data;
   }
 
   const Store = {
     // ---- FLYERS ----
     subscribeFlyers(cb){
-      if (useFirebase && db){
-        return db.collection('flyers').orderBy('order','asc').onSnapshot(
-          snap => cb(snap.docs.map(d => ({ id:d.id, ...d.data() }))),
-          err => console.error('Error leyendo flyers:', err)
-        );
-      }
-      const read = () => cb(JSON.parse(localStorage.getItem('serie23_flyers') || '[]'));
+      let stopped = false;
+      const read = async () => {
+        try {
+          const list = await readServerFlyers();
+          if (!stopped) cb(list);
+        } catch (error){
+          flyerServerOnline = false;
+          updateStorageNote(false);
+          if (!stopped) cb(localFlyerList());
+        }
+      };
       read();
-      window.addEventListener('storage', read);
-      return () => window.removeEventListener('storage', read);
+      const timer = setInterval(read, 10000);
+      return () => { stopped = true; clearInterval(timer); };
     },
     async addFlyer(dataURL){
-      if (useFirebase && db){
-        return db.collection('flyers').add({
-          image: dataURL,
-          order: Date.now(),
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      }
-      const list = JSON.parse(localStorage.getItem('serie23_flyers') || '[]');
-      list.push({ id: 'local_' + Date.now() + '_' + Math.random().toString(36).slice(2), image: dataURL, order: Date.now() });
-      localStorage.setItem('serie23_flyers', JSON.stringify(list));
-      window.dispatchEvent(new Event('storage'));
+      return serverRequest(FLYERS_API, {
+        method:'POST',
+        headers:{'content-type':'application/json','x-flyer-admin-code':CODIGO_ZONA_PRIVADA},
+        body:JSON.stringify({ image:dataURL })
+      });
     },
     async deleteFlyer(id){
-      if (useFirebase && db){
-        return db.collection('flyers').doc(id).delete();
-      }
-      let list = JSON.parse(localStorage.getItem('serie23_flyers') || '[]');
-      list = list.filter(f => f.id !== id);
-      localStorage.setItem('serie23_flyers', JSON.stringify(list));
-      window.dispatchEvent(new Event('storage'));
+      return serverRequest(FLYERS_API + '?id=' + encodeURIComponent(id), {
+        method:'DELETE',
+        headers:{'x-flyer-admin-code':CODIGO_ZONA_PRIVADA}
+      });
     },
     async clearFlyers(){
-      if (useFirebase && db){
-        const snap = await db.collection('flyers').get();
-        const batch = db.batch();
-        snap.docs.forEach(d => batch.delete(d.ref));
-        return batch.commit();
-      }
-      localStorage.setItem('serie23_flyers', '[]');
-      window.dispatchEvent(new Event('storage'));
+      return serverRequest(FLYERS_API + '?id=all', {
+        method:'DELETE',
+        headers:{'x-flyer-admin-code':CODIGO_ZONA_PRIVADA}
+      });
     },
     // ---- MENSAJES / SOLICITUDES ----
     subscribeMessages(cb){
-      if (useFirebase && db){
-        return db.collection('messages').orderBy('createdAt','desc').onSnapshot(
-          snap => cb(snap.docs.map(d => ({ id:d.id, ...d.data() }))),
-          err => console.error('Error leyendo mensajes:', err)
-        );
-      }
       const read = () => cb(JSON.parse(localStorage.getItem('serie23_messages') || '[]').reverse());
       read();
       window.addEventListener('storage', read);
       return () => window.removeEventListener('storage', read);
     },
     async addMessage(obj){
-      if (useFirebase && db){
-        return db.collection('messages').add({
-          ...obj,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      }
       const list = JSON.parse(localStorage.getItem('serie23_messages') || '[]');
-      list.push({ id: 'local_' + Date.now(), ...obj, createdAt: new Date().toISOString() });
+      list.push({ id:'local_' + Date.now(), ...obj, createdAt:new Date().toISOString() });
       localStorage.setItem('serie23_messages', JSON.stringify(list));
       window.dispatchEvent(new Event('storage'));
     }
   };
 
-  if (useFirebase && auth){
-    auth.signInAnonymously().catch(err => {
-      console.error('No se pudo iniciar sesión anónima en Firebase:', err);
-    });
-  }
-
-  updateStorageNote();
+  updateStorageNote(false);
 
   /* ===================================================================
      4) CARRUSEL DE FLYERS (arriba de la página): un flyer a la vez,
      ancho completo, con auto-slide horizontal. Los datos vienen de
-     Store (Firebase/local) y se actualizan en tiempo real para
+     Store (servidor Netlify/respaldo local) y se actualizan para
      cualquier visitante.
      =================================================================== */
   const flyerEmptyMsg = document.getElementById('flyerEmptyMsg');
@@ -1700,7 +1720,7 @@
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.textContent = 'Eliminar';
-      btn.addEventListener('click', () => Store.deleteFlyer(f.id));
+      btn.addEventListener('click', () => Store.deleteFlyer(f.id).catch(err => alert(err.message)));
       row.appendChild(btn);
       adminFlyerList.appendChild(row);
     });
@@ -1749,7 +1769,11 @@
 
   document.getElementById('ctrlClearFlyers').addEventListener('click', async function(){
     if (!confirm('¿Seguro que deseas eliminar TODOS los flyers publicados?')) return;
-    await Store.clearFlyers();
+    try {
+      await Store.clearFlyers();
+    } catch (error){
+      alert(error.message);
+    }
   });
 
   document.getElementById('ctrlExportMsgs').addEventListener('click', function(){

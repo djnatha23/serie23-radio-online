@@ -1,0 +1,8 @@
+{
+  "name": "serie23-radio-online",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "11.0.3"
+  }
+}

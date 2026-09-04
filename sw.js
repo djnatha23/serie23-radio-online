@@ -2,6 +2,7 @@ const CACHE_NAME = 'serie23-app-shell-v1';
 const APP_SHELL = [
   '/',
   '/index.html',
+  '/transmitir.html',
   '/manifest.webmanifest',
   '/app-icon.svg'
 ];

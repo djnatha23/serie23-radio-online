@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e2131f">
+  <meta name="description" content="Guía para transmitir en vivo en Serie23 Radio desde cualquier lugar.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/app-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" sizes="180x180" href="/app-icon-180.png">
+  <title>Transmitir en Serie23 Radio</title>
+  <style>
+    :root{--red:#e2131f;--red-bright:#ff2737;--black:#060504;--ink:#f5f2ee;--muted:#b9b2ae;--line:#3a171b;--card:#130b0d;}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#3a0d13 0,#0d0708 42%,var(--black) 78%);color:var(--ink);font-family:Arial,Helvetica,sans-serif;min-height:100vh}a{color:inherit}.page{width:min(940px,calc(100% - 32px));margin:0 auto;padding:28px 0 54px}.back{display:inline-flex;gap:8px;color:var(--muted);text-decoration:none;font-weight:700;margin-bottom:30px}.back:hover{color:var(--ink)}.brand{display:flex;align-items:center;gap:14px;margin-bottom:42px}.brand img{width:62px;height:62px;border-radius:17px;box-shadow:0 8px 24px #0008}.brand-name{font-size:24px;font-weight:900;letter-spacing:1px}.brand-name span{color:var(--red)}.brand small{display:block;color:var(--red-bright);font-size:11px;letter-spacing:3px;margin-top:4px}.hero{max-width:760px;margin-bottom:30px}.kicker{color:var(--red-bright);font-weight:900;letter-spacing:3px;font-size:12px;margin:0 0 12px}h1{font-size:clamp(36px,7vw,68px);line-height:.96;margin:0 0 20px;letter-spacing:-2px}.lede{font-size:20px;line-height:1.5;color:var(--muted);margin:0}.notice{border-left:4px solid var(--red);background:#1a0b0e;padding:16px 18px;margin:28px 0 22px;color:#efe9e5;line-height:1.5}.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:start}.card{background:linear-gradient(145deg,#1a0b0e,#0d0809);border:1px solid var(--line);border-radius:18px;padding:25px;box-shadow:0 18px 48px #0005}h2{font-size:24px;margin:0 0 18px}h3{font-size:17px;margin:0 0 12px}dl{margin:0;display:grid;grid-template-columns:145px 1fr;gap:0;border-top:1px solid var(--line)}dt,dd{padding:13px 0;border-bottom:1px solid var(--line);margin:0}dt{color:var(--muted);font-weight:700}dd{font-family:Consolas,monospace;font-weight:700;word-break:break-word}.private{margin:18px 0 0;padding:14px;border-radius:10px;background:#28090e;color:#ffd9da;line-height:1.45}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;border-radius:8px;padding:12px 17px;text-decoration:none;font-weight:900;border:1px solid var(--red);background:var(--red);color:#fff;margin:12px 8px 0 0;cursor:pointer}.btn:hover{background:var(--red-bright)}.btn.secondary{background:transparent;color:var(--ink);border-color:#704047}.btn.secondary:hover{border-color:var(--red)}.copy-status{min-height:20px;color:#82e6a1;font-size:13px;font-weight:700;margin-top:12px}.steps{display:grid;gap:14px}.step{display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:start}.number{color:var(--red-bright);font-size:22px;font-weight:900}.step p{color:var(--muted);line-height:1.5;margin:3px 0 0}.tip{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);line-height:1.5}.live{margin-top:18px;padding:17px;border:1px solid #1e5c3c;background:#08170f;border-radius:12px;line-height:1.5}.live strong{color:#7deda5}footer{color:#807875;border-top:1px solid var(--line);margin-top:40px;padding-top:20px;font-size:13px}@media(max-width:720px){.page{width:min(100% - 24px,560px);padding-top:20px}.brand{margin-bottom:32px}.grid{grid-template-columns:1fr}dl{grid-template-columns:120px 1fr}.lede{font-size:18px}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <a class="back" href="/">← Volver a Serie23 Radio</a>
+    <div class="brand"><img src="/app-icon-180.png" alt="Logo de Serie23 Radio Show"><div class="brand-name">SERIE<span>23</span><small>RADIO SHOW</small></div></div>
+    <main>
+      <section class="hero"><p class="kicker">ÁREA PARA DJ</p><h1>Transmite en vivo desde cualquier lugar.</h1><p class="lede">Envíale este enlace a tu DJ. Con una conexión a Internet y BUTT podrá entrar a la cabina de Serie23 Radio desde donde esté.</p></section>
+      <div class="notice"><strong>Importante:</strong> este enlace contiene los datos públicos del servidor. La contraseña de emisión se entrega por separado y solo a los DJs autorizados.</div>
+      <div class="grid">
+        <section class="card"><h2>Datos para conectar BUTT</h2><dl><dt>Tipo</dt><dd>Icecast</dd><dt>Servidor</dt><dd>c32.radioboss.fm</dd><dt>Puerto</dt><dd>8884</dd><dt>Montaje</dt><dd>/live</dd><dt>Formato</dt><dd>MP3 · 128 kbps</dd></dl><div class="private">🔒 <strong>Contraseña:</strong> solicitarla al administrador antes de salir al aire.</div><button class="btn" id="copyData" type="button">📋 Copiar datos de conexión</button><div class="copy-status" id="copyStatus" aria-live="polite"></div></section>
+        <section class="card"><h2>Cómo salir al aire</h2><div class="steps"><div class="step"><div class="number">01</div><div><h3>Instala BUTT</h3><p>Descarga el programa oficial en tu computadora.</p><a class="btn secondary" href="https://danielnoethen.de/butt/" target="_blank" rel="noopener">Descargar BUTT</a></div></div><div class="step"><div class="number">02</div><div><h3>Configura el servidor</h3><p>Usa los datos de esta página y la contraseña privada que te entregue el administrador.</p></div></div><div class="step"><div class="number">03</div><div><h3>Conecta el micrófono</h3><p>En BUTT selecciona tu micrófono o mezcladora como dispositivo de audio.</p></div></div><div class="step"><div class="number">04</div><div><h3>Pulsa Connect</h3><p>Avísale al administrador antes de conectar. Solo puede entrar un DJ a la vez.</p></div></div></div><div class="tip">💡 Mantén abierta esta página para volver a consultar los datos. Si vas a transmitir desde un celular, necesitarás una aplicación móvil compatible con Icecast.</div></section>
+      </div>
+      <div class="live"><strong>Señal pública:</strong> cuando estés conectado, el público podrá escucharte desde el reproductor de <a href="/">serie23.netlify.app</a>.</div>
+    </main>
+    <footer>Serie23 Radio Online · 24/7 Tropical · Un DJ a la vez en la señal en vivo.</footer>
+  </div>
+  <script>
+    const copyButton = document.getElementById('copyData');
+    const copyStatus = document.getElementById('copyStatus');
+    const connectionData = ['Tipo: Icecast','Servidor: c32.radioboss.fm','Puerto: 8884','Montaje: /live','Formato: MP3 · 128 kbps','Contraseña: solicitarla al administrador'].join('\n');
+    copyButton.addEventListener('click', async () => { try { await navigator.clipboard.writeText(connectionData); copyStatus.textContent = '✅ Datos copiados. No incluye la contraseña.'; } catch { copyStatus.textContent = 'Selecciona los datos manualmente si tu navegador bloqueó la copia.'; } });
+  </script>
+</body>
+</html>

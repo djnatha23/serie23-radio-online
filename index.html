@@ -891,7 +891,7 @@
         <button class="play-btn" id="playBtn">▶</button>
         <div class="player-mid">
           <div class="player-station">Serie23 Radio Online</div>
-          <div class="player-status"><span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block;"></span>EN VIVO</div>
+          <div class="player-status"><span class="dot" id="liveStatusDot" style="width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block;"></span><span id="liveStatusText">EN VIVO</span></div>
           <div class="wave-row">
             <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
           </div>
@@ -902,6 +902,7 @@
           <input type="range" min="0" max="100" value="70" aria-label="Volumen">
         </div>
       </div>
+      <audio id="radioAudio" preload="none" aria-label="Serie23 Radio Online en vivo"></audio>
     </div>
   </section>
 
@@ -1260,36 +1261,84 @@
   mainNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mainNav.classList.remove('open')));
 
   /* ===================================================================
-     2) REPRODUCTORES (el de la sección "Escuchar en Vivo" y el fijo abajo)
-     Nota: son visuales/decorativos hasta que conectes tu stream real
-     (Icecast/Shoutcast). Cuando lo tengas, agrega aquí un <audio> con la
-     URL del stream y conecta play()/pause() a estos mismos botones.
+     2) REPRODUCTORES (señal real de RadioBOSS Cloud)
      =================================================================== */
+  const RADIO_STREAM_URL = 'https://c32.radioboss.fm/stream/884';
+  const radioAudio = document.getElementById('radioAudio');
   const playBtn = document.getElementById('playBtn');
   const playerBox = document.getElementById('playerBox');
   const playBtn2 = document.getElementById('playBtn2');
   const bottomPlayer = document.getElementById('bottomPlayer');
-  let playing = true;
+  const liveStatusText = document.getElementById('liveStatusText');
+  const liveStatusDot = document.getElementById('liveStatusDot');
+  const mainVolume = document.querySelector('.player .volume input[type="range"]');
+  const volumeRange2 = document.getElementById('volumeRange2');
+  let playing = false;
 
-  function setPlaying(state){
+  radioAudio.src = RADIO_STREAM_URL;
+  radioAudio.volume = 0.7;
+
+  function updatePlayerUI(state){
     playing = state;
     const icon = playing ? '❚❚' : '▶';
     playBtn.textContent = icon;
     playBtn2.textContent = icon;
+    playBtn.setAttribute('aria-label', playing ? 'Pausar radio' : 'Reproducir radio');
+    playBtn2.setAttribute('aria-label', playing ? 'Pausar radio' : 'Reproducir radio');
     playerBox.classList.toggle('paused', !playing);
     bottomPlayer.classList.toggle('paused', !playing);
   }
+
+  function setStreamStatus(label, color){
+    if (liveStatusText) liveStatusText.textContent = label;
+    if (liveStatusDot) liveStatusDot.style.background = color;
+  }
+
+  async function setPlaying(state){
+    if (state){
+      setStreamStatus('CONECTANDO...', 'var(--gold)');
+      try {
+        await radioAudio.play();
+        updatePlayerUI(true);
+        setStreamStatus('EN VIVO', 'var(--red)');
+      } catch (error) {
+        updatePlayerUI(false);
+        setStreamStatus('PULSA PLAY PARA ESCUCHAR', 'var(--red)');
+      }
+      return;
+    }
+    radioAudio.pause();
+    updatePlayerUI(false);
+    setStreamStatus('EN VIVO', 'var(--red)');
+  }
+
   playBtn.addEventListener('click', () => setPlaying(!playing));
   playBtn2.addEventListener('click', () => setPlaying(!playing));
-  setPlaying(true);
+  radioAudio.addEventListener('playing', () => {
+    updatePlayerUI(true);
+    setStreamStatus('EN VIVO', 'var(--red)');
+  });
+  radioAudio.addEventListener('pause', () => updatePlayerUI(false));
+  radioAudio.addEventListener('error', () => {
+    updatePlayerUI(false);
+    setStreamStatus('SEÑAL NO DISPONIBLE', 'var(--red)');
+  });
 
-  const volumeRange2 = document.getElementById('volumeRange2');
-  if (volumeRange2){
-    volumeRange2.addEventListener('input', function(){
-      const main = document.querySelector('.player .volume input[type=range]');
-      if (main) main.value = this.value;
-    });
+  function setVolume(value){
+    const normalized = Number(value) / 100;
+    radioAudio.volume = Number.isFinite(normalized) ? normalized : 0.7;
+    if (mainVolume) mainVolume.value = value;
+    if (volumeRange2) volumeRange2.value = value;
   }
+
+  if (mainVolume){
+    mainVolume.addEventListener('input', function(){ setVolume(this.value); });
+  }
+  if (volumeRange2){
+    volumeRange2.addEventListener('input', function(){ setVolume(this.value); });
+  }
+  setVolume(70);
+  updatePlayerUI(false);
 
   // Lista de canciones del ticker (sustituir por metadatos reales del stream)
   const tpSongs = [

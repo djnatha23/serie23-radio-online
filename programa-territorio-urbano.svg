@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Territorio Urbano</title>
+  <desc id="desc">Ciudad nocturna con luces rojas y azules para el programa Territorio Urbano.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#050711"/><stop offset=".55" stop-color="#111d42"/><stop offset="1" stop-color="#470d32"/></linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="1200" height="700" fill="url(#bg)"/>
+  <g filter="url(#blur)" opacity=".75"><circle cx="210" cy="190" r="95" fill="#e2131f"/><circle cx="1010" cy="150" r="110" fill="#168cff"/><circle cx="760" cy="420" r="85" fill="#9b31f0"/></g>
+  <g fill="#070911"><path d="M0 520V370h90v150h40V300h110v220h42V420h88v100h45V255h130v265h35V340h108v180h44V280h100v240h48V390h120v130h50V235h150v285H0Z"/></g>
+  <g fill="#ffcf5c"><path d="M150 340h18v20h-18zM185 340h18v20h-18zM150 385h18v20h-18zM185 385h18v20h-18zM477 295h20v24h-20zM515 295h20v24h-20zM477 345h20v24h-20zM515 345h20v24h-20zM810 320h18v20h-18zM848 320h18v20h-18zM810 365h18v20h-18zM848 365h18v20h-18z"/></g>
+  <path d="M0 570L190 460l120 70 220-145 180 105 180-160 310 160v210H0Z" fill="#03040a"/>
+  <text x="72" y="100" fill="#6ec8ff" font-family="Arial,sans-serif" font-size="23" font-weight="700" letter-spacing="6">SERIE23 RADIO</text>
+  <text x="72" y="505" fill="#fff" font-family="Arial,sans-serif" font-size="62" font-weight="800" letter-spacing="2">TERRITORIO</text>
+  <text x="72" y="570" fill="#66c7ff" font-family="Arial,sans-serif" font-size="62" font-weight="800" letter-spacing="2">URBANO</text>
+  <rect x="72" y="620" width="190" height="4" fill="#e2131f"/>
+</svg>

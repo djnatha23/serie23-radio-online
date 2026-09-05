@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Madrugadas Románticas</title>
+  <desc id="desc">Luna llena y cielo nocturno para el programa Madrugadas Románticas.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#070819"/><stop offset=".6" stop-color="#201746"/><stop offset="1" stop-color="#7c234e"/></linearGradient>
+    <radialGradient id="moon"><stop stop-color="#fff8db"/><stop offset=".7" stop-color="#ffd5b0"/><stop offset="1" stop-color="#d2768f"/></radialGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#bg)"/>
+  <circle cx="890" cy="230" r="130" fill="url(#moon)"/>
+  <circle cx="940" cy="190" r="130" fill="#11102e"/>
+  <g fill="#fff4d5"><circle cx="150" cy="130" r="4"/><circle cx="270" cy="230" r="6"/><circle cx="410" cy="100" r="3"/><circle cx="560" cy="195" r="4"/><circle cx="1070" cy="95" r="5"/><circle cx="1090" cy="350" r="3"/></g>
+  <path d="M0 570 C190 480 350 540 510 490S820 525 990 470s155 10 210-20V700H0Z" fill="#080817"/>
+  <path d="M205 490 C255 415 330 415 380 490" fill="none" stroke="#e881a7" stroke-width="8" opacity=".8"/>
+  <path d="M292 490v-70M290 420l-28-32M290 420l28-32" fill="none" stroke="#e881a7" stroke-width="7" stroke-linecap="round"/>
+  <text x="72" y="100" fill="#f2a9c6" font-family="Arial,sans-serif" font-size="23" font-weight="700" letter-spacing="6">SERIE23 RADIO</text>
+  <text x="72" y="505" fill="#fff5fb" font-family="Arial,sans-serif" font-size="62" font-weight="800" letter-spacing="2">MADRUGADAS</text>
+  <text x="72" y="570" fill="#f2a9c6" font-family="Arial,sans-serif" font-size="62" font-weight="800" letter-spacing="2">ROMÁNTICAS</text>
+  <rect x="72" y="620" width="190" height="4" fill="#e2131f"/>
+</svg>

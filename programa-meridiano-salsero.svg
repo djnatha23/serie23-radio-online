@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Meridiano Salsero</title>
+  <desc id="desc">Disco de vinilo y colores cálidos para el programa Meridiano Salsero.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#32110d"/><stop offset=".55" stop-color="#bd321c"/><stop offset="1" stop-color="#f2a22d"/></linearGradient>
+    <radialGradient id="disc"><stop stop-color="#ef9c2f"/><stop offset=".08" stop-color="#241015"/><stop offset=".22" stop-color="#9b1d19"/><stop offset=".23" stop-color="#171016"/><stop offset=".6" stop-color="#08080c"/><stop offset="1" stop-color="#2b1217"/></radialGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#bg)"/>
+  <circle cx="895" cy="315" r="270" fill="url(#disc)"/>
+  <circle cx="895" cy="315" r="44" fill="#f2a22d"/><circle cx="895" cy="315" r="12" fill="#2a0d14"/>
+  <g fill="none" stroke="#ffcc63" stroke-width="3" opacity=".32"><circle cx="895" cy="315" r="85"/><circle cx="895" cy="315" r="125"/><circle cx="895" cy="315" r="166"/><circle cx="895" cy="315" r="207"/></g>
+  <path d="M0 530 C170 410 275 610 430 500S680 450 790 560S1030 630 1200 490V700H0Z" fill="#150b13" opacity=".76"/>
+  <g fill="#ffd369" opacity=".9"><circle cx="170" cy="170" r="9"/><circle cx="270" cy="110" r="5"/><circle cx="380" cy="195" r="7"/><circle cx="520" cy="100" r="4"/></g>
+  <text x="72" y="100" fill="#ffd369" font-family="Arial,sans-serif" font-size="23" font-weight="700" letter-spacing="6">SERIE23 RADIO</text>
+  <text x="72" y="505" fill="#fff4dc" font-family="Arial,sans-serif" font-size="62" font-weight="800" letter-spacing="2">MERIDIANO</text>
+  <text x="72" y="570" fill="#ffd369" font-family="Arial,sans-serif" font-size="62" font-weight="800" letter-spacing="2">SALSERO</text>
+  <rect x="72" y="620" width="190" height="4" fill="#e2131f"/>
+</svg>

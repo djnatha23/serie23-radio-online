@@ -20,7 +20,8 @@ function parseStatus(raw) {
   try {
     const data = JSON.parse(raw);
     const sources = asSources(data);
-    const source = sources.find(item => item.mount === '/stream' || item.mount === '/live') || sources[0];
+    // La página debe mostrar únicamente la transmisión en vivo de BUTT.
+    const source = sources.find(item => item.mount === '/live');
     const listeners = Number(source?.listeners ?? data?.icestats?.listeners);
     return {
       listeners,

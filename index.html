@@ -1327,9 +1327,25 @@
   const mainVolume = document.querySelector('.player .volume input[type="range"]');
   const volumeRange2 = document.getElementById('volumeRange2');
   let playing = false;
+  let currentStreamUrl = RADIO_STREAM_URL;
 
   radioAudio.src = RADIO_STREAM_URL;
   radioAudio.volume = 0.7;
+
+  function applyDetectedStreamUrl(value){
+    if (!value) return;
+    try{
+      const nextUrl = new URL(value, RADIO_STREAM_URL).toString();
+      if (!/^https:\/\/c32\.radioboss\.fm:8884\/(stream|autodj|live)$/.test(nextUrl) || nextUrl === currentStreamUrl) return;
+      const wasPlaying = !radioAudio.paused;
+      currentStreamUrl = nextUrl;
+      radioAudio.src = nextUrl;
+      radioAudio.load();
+      if (wasPlaying) radioAudio.play().catch(() => setStreamStatus('PULSA PLAY PARA ESCUCHAR', 'var(--red)'));
+    } catch (error){
+      // Se conserva el enlace predeterminado si el servidor devuelve un valor inválido.
+    }
+  }
 
   function updatePlayerUI(state){
     playing = state;
@@ -1475,6 +1491,7 @@
       if (!response.ok) throw new Error('No se pudo consultar la canción');
       const data = await response.json();
       displayNowPlaying(data.title, data.online);
+      applyDetectedStreamUrl(data.listenurl);
     } catch (error){
       displayNowPlaying('', false);
     }

@@ -25,6 +25,8 @@ function parseStatus(raw) {
     return {
       listeners,
       title: source?.title || source?.yp_currently_playing || '',
+      mount: source?.mount || '',
+      listenurl: source?.listenurl || '',
       online: Number.isFinite(listeners)
     };
   } catch (error) {
@@ -34,6 +36,8 @@ function parseStatus(raw) {
     return {
       listeners,
       title: titleMatch ? titleMatch[1].trim() : '',
+      mount: '',
+      listenurl: '',
       online: Number.isFinite(listeners)
     };
   }
@@ -55,6 +59,8 @@ export default async (request) => {
     return json({
       listeners: status.online ? Math.max(0, Math.round(status.listeners)) : null,
       title: status.title,
+      mount: status.mount,
+      listenurl: status.listenurl,
       online: status.online,
       updatedAt: new Date().toISOString()
     });
